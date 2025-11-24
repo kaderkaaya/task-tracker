@@ -1,7 +1,8 @@
 import 'dotenv/config';
 import { defineConfig, env } from 'prisma/config';
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from './generated/prisma';
+import { PrismaPg } from '@prisma/adapter-pg'; //bu prisma6 ile adapter mantigi geldigi icin
+//kullaniyoruz. @prisma/client mantigi kalkmis oldu.npx generate etmemiz gerekli.
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const prisma = new PrismaClient({

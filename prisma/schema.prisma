@@ -6,3 +6,39 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  role      String   @default("user")
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  userId      Int?
+  user        User?      @relation(fields: [userId], references: [id])
+  title       String
+  description String
+  dueDate     DateTime
+  createdAt   DateTime   @default(now())
+  completedAt DateTime
+  taskStatus  TaskStatus @default(TODO)
+  tags        Tag[]
+}
+
+model Tag {
+  id     Int    @id @default(autoincrement())
+  task   Task?  @relation(fields: [taskId], references: [id])
+  taskId Int?
+  name   String @unique
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
