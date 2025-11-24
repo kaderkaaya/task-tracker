@@ -1,12 +1,12 @@
 import 'dotenv/config';
 import { defineConfig, env } from 'prisma/config';
-import { PrismaClient } from './generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const prisma = new PrismaClient({
   adapter: new PrismaPg({
-    url: process.env.DATABASE_URL,
+    url: env('DATABASE_URL'),
   }),
 });
 export default defineConfig({
