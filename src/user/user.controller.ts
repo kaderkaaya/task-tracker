@@ -8,7 +8,12 @@ export class UserController {
 
   @Post('sign-in')
   async create(@Body() body: { email: string, password: string, name: string }) {
-    return this.userService.create(body.email, body.password, body.name);
+    try {
+      const user = this.userService.create(body.email, body.password, body.name);
+      return user;
+    } catch (error) {
+
+    }
   }
 
   // @Post('login')

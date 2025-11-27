@@ -26,7 +26,7 @@ model Task {
   description String
   dueDate     DateTime
   createdAt   DateTime   @default(now())
-  completedAt DateTime
+  completedAt DateTime?
   taskStatus  TaskStatus @default(TODO)
   tags        Tag[]
 }

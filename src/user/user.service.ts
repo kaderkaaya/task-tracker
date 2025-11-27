@@ -9,7 +9,7 @@ export class UserService {
   constructor(
     private readonly databaseService: DatabaseService,
   ) { }
-  async create(email: string, password: string, name: string): Promise<object> {
+  async create(email: string, password: string, name: string): Promise<any> {
     const hash = await bcrypt.hash(password, saltOrRounds);
     return this.databaseService.user.create({
       data: {
