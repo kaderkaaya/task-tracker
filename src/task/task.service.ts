@@ -7,6 +7,9 @@ import { GetTasksDto } from './dto/get-tasks-dto';
 import { UpdateTaskDto } from './dto/update-task-dto';
 import { CompleteTaskDto } from './dto/complete-task-dto';
 import { UpdateTaskstatusDto } from './dto/update-task-status-dto';
+import { AddFavoriteDto } from './dto/add-favorite-dto';
+import { AddPrivateDto } from './dto/add-private-dto';
+import { AddPriorityDto } from './dto/add-priority-dto';
 @Injectable()
 export class TaskService {
     constructor(
@@ -87,4 +90,41 @@ export class TaskService {
             }
         })
     }
+
+    async addFavorite(addFavoriteDto: AddFavoriteDto) {
+        return this.databaseService.task.update({
+            where: {
+                id: addFavoriteDto.taskId,
+                userId: addFavoriteDto.userId
+            },
+            data: {
+                isFavorite: Boolean(addFavoriteDto.isFavorite),
+            }
+        })
+    }
+
+    async addPrivate(addPrivateDto: AddPrivateDto) {
+        return this.databaseService.task.update({
+            where: {
+                id: addPrivateDto.taskId,
+                userId: addPrivateDto.userId
+            },
+            data: {
+                isPrivate: Boolean(addPrivateDto.isPrivate),
+            }
+        })
+    }
+
+    async addPriorityToTask(addPriorityDto: AddPriorityDto) {
+        return this.databaseService.task.update({
+            where: {
+                id: addPriorityDto.taskId,
+                userId: addPriorityDto.userId
+            },
+            data: {
+                priority: addPriorityDto.priority,
+            }
+        })
+    }
+
 }

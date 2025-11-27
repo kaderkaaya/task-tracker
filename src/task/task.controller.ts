@@ -8,6 +8,9 @@ import { GetTasksDto } from './dto/get-tasks-dto';
 import { UpdateTaskDto } from './dto/update-task-dto';
 import { CompleteTaskDto } from './dto/complete-task-dto';
 import { UpdateTaskstatusDto } from './dto/update-task-status-dto';
+import { AddFavoriteDto } from './dto/add-favorite-dto';
+import { AddPrivateDto } from './dto/add-private-dto';
+import { AddPriorityDto } from './dto/add-priority-dto';
 @Controller('task')
 export class TaskController {
     constructor(private readonly taskServices: TaskService,
@@ -46,5 +49,20 @@ export class TaskController {
     @Post('complete-task')
     async completeTask(@Body() completeTaskDto: CompleteTaskDto): Promise<Task> {
         return this.taskServices.completeTask(completeTaskDto);
+    }
+
+    @Post('add-favorite')
+    async addFavorite(@Body() addFavoriteDto: AddFavoriteDto): Promise<Task> {
+        return this.taskServices.addFavorite(addFavoriteDto);
+    }
+
+    @Post('is-private')
+    async addPrivate(@Body() addPrivateDto: AddPrivateDto): Promise<Task> {
+        return this.taskServices.addPrivate(addPrivateDto);
+    }
+
+    @Post('add-priority-task')
+    async addPriorityToTask(@Body() addPriorityDto: AddPriorityDto): Promise<Task> {
+        return this.taskServices.addPriorityToTask(addPriorityDto);
     }
 }

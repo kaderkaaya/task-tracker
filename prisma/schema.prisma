@@ -29,6 +29,9 @@ model Task {
   completedAt DateTime?
   taskStatus  TaskStatus @default(TODO)
   tags        Tag[]
+  isPrivate   Boolean?   @default(false)
+  priority    Priority?  @default(LOW)
+  isFavorite  Boolean?   @default(false)
 }
 
 model Tag {
@@ -42,4 +45,10 @@ enum TaskStatus {
   TODO
   IN_PROGRESS
   DONE
+}
+
+enum Priority {
+  LOW
+  HIGH
+  MEDIUM
 }
