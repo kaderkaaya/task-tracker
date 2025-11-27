@@ -1,29 +1,26 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Prisma } from '@prisma/client';
+import { CreateUserDto } from './dto/create-user.dto';
+import { GetUserByIdDto } from './dto/get-user-by-id-dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Post('sign-in')
-  async create(@Body() body: { email: string, password: string, name: string }) {
+  async create(@Body() createUserDto: CreateUserDto) {
     try {
-      const user = this.userService.create(body.email, body.password, body.name);
+      const user = this.userService.create(createUserDto);
       return user;
     } catch (error) {
 
     }
   }
 
-  // @Post('login')
-  // async login(@Body() body: { email: string, password: string }) {
-  //   return this.userService.login(body.email, body.password);
-  // }
-
   @Get('getUserById')
-  async findOne(@Query('id') id: number) {
-    return this.userService.findOne(+id);
+  async findOne(@Query() getUserByIdDto: GetUserByIdDto) {
+    return this.userService.findOne(getUserByIdDto);
   }
 
   @Post('update')
