@@ -24,13 +24,13 @@ export const AppErrors = {
         statusCode: 105,
         message: 'Invalid User'
     },
-    VERIFY_ERROR: {
-        statusCode: 106,
-        message: 'You need to verify your account.'
+    TASK_ERROR: {
+        statusCode: 709,
+        message: 'Invalid task'
     },
-    EXIT_ERROR: {
+    DATE_ERROR: {
         statusCode: 107,
-        message: 'Exit failed'
+        message: 'Date error'
     },
     AUTH_ERROR: {
         statusCode: 403,

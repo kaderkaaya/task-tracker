@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ParseDatePipe } from '@nestjs/common';
 import { Prisma, TaskStatus } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateTaskDto } from './dto/create-task-dto';
@@ -10,20 +10,44 @@ import { UpdateTaskstatusDto } from './dto/update-task-status-dto';
 import { AddFavoriteDto } from './dto/add-favorite-dto';
 import { AddPrivateDto } from './dto/add-private-dto';
 import { AddPriorityDto } from './dto/add-priority-dto';
+import { UserService } from 'src/user/user.service';
+import { AppErrors } from 'src/common/errors/err';
+import ApiError from 'src/common/errors/api-error';
 @Injectable()
 export class TaskService {
     constructor(
         private readonly databaseService: DatabaseService,
+        private usersService: UserService,
 
     ) { }
 
     async createTask(createTaskDto: CreateTaskDto) {
+        const id: number = createTaskDto.userId
+        const user = await this.usersService.getUserById(id);
+        if (!user) {
+            throw new ApiError(AppErrors.USER_ERROR.message, AppErrors.USER_ERROR.statusCode)
+        }
+        const now = new Date();
+        const date = new Date(createTaskDto.dueDate);
+        if (date < now) {
+            throw new ApiError(AppErrors.DATE_ERROR.message, AppErrors.DATE_ERROR.statusCode)
+
+        }
         return this.databaseService.task.create({
             data: createTaskDto
         })
     }
 
     async addTags(addTagsDto: AddTagsDto) {
+        const id: number = addTagsDto.userId
+        const user = await this.usersService.getUserById(id);
+        if (!user) {
+            throw new ApiError(AppErrors.USER_ERROR.message, AppErrors.USER_ERROR.statusCode)
+        }
+        const task = await this.getUserTask(addTagsDto.taskId);
+        if (!task) {
+            throw new ApiError(AppErrors.TASK_ERROR.message, AppErrors.TASK_ERROR.statusCode)
+        }
         return this.databaseService.task.update({
             where: { id: addTagsDto.taskId },
             data: {
@@ -35,6 +59,11 @@ export class TaskService {
     }
 
     async getUserTasks(getTaskDto: GetTasksDto) {
+        const id: number = getTaskDto.userId
+        const user = await this.usersService.getUserById(id);
+        if (!user) {
+            throw new ApiError(AppErrors.USER_ERROR.message, AppErrors.USER_ERROR.statusCode)
+        }
         const taskId = Number(getTaskDto.taskId)
         if (getTaskDto.taskId) {
             const task = await this.getUserTask(taskId)
@@ -53,6 +82,21 @@ export class TaskService {
     }
 
     async updateTask(updateTaskDto: UpdateTaskDto) {
+        const id: number = updateTaskDto.userId
+        const user = await this.usersService.getUserById(id);
+        if (!user) {
+            throw new ApiError(AppErrors.USER_ERROR.message, AppErrors.USER_ERROR.statusCode)
+        }
+        const task = await this.getUserTask(updateTaskDto.taskId);
+        if (!task) {
+            throw new ApiError(AppErrors.TASK_ERROR.message, AppErrors.TASK_ERROR.statusCode)
+        }
+        const now = new Date();
+        const date = new Date(updateTaskDto.dueDate);
+        if (date < now) {
+            throw new ApiError(AppErrors.DATE_ERROR.message, AppErrors.DATE_ERROR.statusCode)
+
+        }
         return this.databaseService.task.update({
             where: {
                 id: updateTaskDto.taskId,
@@ -67,6 +111,15 @@ export class TaskService {
     }
 
     async completeTask(completeTaskDto: CompleteTaskDto) {
+        const id: number = completeTaskDto.userId
+        const user = await this.usersService.getUserById(id);
+        if (!user) {
+            throw new ApiError(AppErrors.USER_ERROR.message, AppErrors.USER_ERROR.statusCode)
+        }
+        const task = await this.getUserTask(completeTaskDto.taskId);
+        if (!task) {
+            throw new ApiError(AppErrors.TASK_ERROR.message, AppErrors.TASK_ERROR.statusCode)
+        }
         return this.databaseService.task.update({
             where: {
                 id: completeTaskDto.taskId,
@@ -80,6 +133,15 @@ export class TaskService {
     }
 
     async updateTaskStatus(updateTaskstatusDto: UpdateTaskstatusDto) {
+        const id: number = updateTaskstatusDto.userId
+        const user = await this.usersService.getUserById(id);
+        if (!user) {
+            throw new ApiError(AppErrors.USER_ERROR.message, AppErrors.USER_ERROR.statusCode)
+        }
+        const task = await this.getUserTask(updateTaskstatusDto.taskId);
+        if (!task) {
+            throw new ApiError(AppErrors.TASK_ERROR.message, AppErrors.TASK_ERROR.statusCode)
+        }
         return this.databaseService.task.update({
             where: {
                 id: updateTaskstatusDto.taskId,
@@ -92,6 +154,15 @@ export class TaskService {
     }
 
     async addFavorite(addFavoriteDto: AddFavoriteDto) {
+        const id: number = addFavoriteDto.userId
+        const user = await this.usersService.getUserById(id);
+        if (!user) {
+            throw new ApiError(AppErrors.USER_ERROR.message, AppErrors.USER_ERROR.statusCode)
+        }
+        const task = await this.getUserTask(addFavoriteDto.taskId);
+        if (!task) {
+            throw new ApiError(AppErrors.TASK_ERROR.message, AppErrors.TASK_ERROR.statusCode)
+        }
         return this.databaseService.task.update({
             where: {
                 id: addFavoriteDto.taskId,

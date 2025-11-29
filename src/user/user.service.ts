@@ -15,9 +15,9 @@ export class UserService {
   ) { }
 
   async create(createUserDto: CreateUserDto): Promise<any> {
-    const user = await this.getExistingUser(createUserDto.email);
-    if(user){
-     throw new ApiError(AppErrors.EXISTING_USER.message,AppErrors.EXISTING_USER.statusCode)
+    const user = await this.getUser(createUserDto.email);
+    if (user) {
+      throw new ApiError(AppErrors.EXISTING_USER.message, AppErrors.EXISTING_USER.statusCode)
     }
     const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
     return this.databaseService.user.create({
@@ -42,6 +42,10 @@ export class UserService {
   }
 
   async update(id: number, data: Prisma.UserUpdateInput) {
+    const user = await this.getUserById(id);
+    if (!user) {
+      throw new ApiError(AppErrors.USER_ERROR.message, AppErrors.USER_ERROR.statusCode)
+    }
     return this.databaseService.user.update({
       where: { id },
       data
@@ -54,10 +58,9 @@ export class UserService {
       data: { token },
     })
   }
-
-  async getExistingUser(email: string) {
+  async getUserById(id: number) {
     return this.databaseService.user.findUnique({
-      where: { email }
+      where: { id }
     })
   }
 
