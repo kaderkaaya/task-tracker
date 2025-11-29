@@ -10,22 +10,20 @@ export class UserController {
 
   @Post('sign-in')
   async create(@Body() createUserDto: CreateUserDto) {
-    try {
-      const user = this.userService.create(createUserDto);
-      return user;
-    } catch (error) {
-
-    }
+    const user = await this.userService.create(createUserDto);
+    return { user };
   }
 
   @Get('getUserById')
   async findOne(@Query() getUserByIdDto: GetUserByIdDto) {
-    return this.userService.findOne(getUserByIdDto);
+    const user = await this.userService.findOne(getUserByIdDto);
+    return { user };
   }
 
   @Post('update')
   async update(@Body() body: { id: number, data: Prisma.UserUpdateInput }) {
-    return this.userService.update(body.id, body.data);
+    const user = await this.userService.update(body.id, body.data);
+    return { user };
   }
 
 }
