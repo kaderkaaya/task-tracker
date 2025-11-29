@@ -17,9 +17,10 @@ export class TaskController {
     ) { }
 
     @Post('create-task')
-    async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+    async createTask(@Body() createTaskDto: CreateTaskDto): Promise<any> {
         try {
-            return await this.taskServices.createTask(createTaskDto);
+            const task = await this.taskServices.createTask(createTaskDto);
+            return { task };
         } catch (error) {
             console.log(error);
             throw new InternalServerErrorException('Failed to create task');
@@ -33,36 +34,42 @@ export class TaskController {
 
     @Get('get-tasks')
     async getUserTasks(@Query() getTaskDto: GetTasksDto): Promise<any> {
-        return this.taskServices.getUserTasks(getTaskDto);
+        return await this.taskServices.getUserTasks(getTaskDto);
     }
 
     @Post('update-task')
-    async updateTask(@Body() updateTaskDto: UpdateTaskDto): Promise<Task> {
-        return this.taskServices.updateTask(updateTaskDto);
+    async updateTask(@Body() updateTaskDto: UpdateTaskDto): Promise<any> {
+        const task = await this.taskServices.updateTask(updateTaskDto);
+        return { task };
     }
 
     @Post('update-task-status')
-    async updateTaskStatus(@Body() updateTaskstatusDto: UpdateTaskstatusDto): Promise<Task> {
-        return this.taskServices.updateTaskStatus(updateTaskstatusDto);
+    async updateTaskStatus(@Body() updateTaskstatusDto: UpdateTaskstatusDto): Promise<any> {
+        const task = await this.taskServices.updateTaskStatus(updateTaskstatusDto);
+        return { task };
     }
 
     @Post('complete-task')
-    async completeTask(@Body() completeTaskDto: CompleteTaskDto): Promise<Task> {
-        return this.taskServices.completeTask(completeTaskDto);
+    async completeTask(@Body() completeTaskDto: CompleteTaskDto): Promise<any> {
+        const task = await this.taskServices.completeTask(completeTaskDto);
+        return { task };
     }
 
     @Post('add-favorite')
-    async addFavorite(@Body() addFavoriteDto: AddFavoriteDto): Promise<Task> {
-        return this.taskServices.addFavorite(addFavoriteDto);
+    async addFavorite(@Body() addFavoriteDto: AddFavoriteDto): Promise<any> {
+        const task = await this.taskServices.addFavorite(addFavoriteDto);
+        return { task };
     }
 
     @Post('is-private')
-    async addPrivate(@Body() addPrivateDto: AddPrivateDto): Promise<Task> {
-        return this.taskServices.addPrivate(addPrivateDto);
+    async addPrivate(@Body() addPrivateDto: AddPrivateDto): Promise<any> {
+        const task = await this.taskServices.addPrivate(addPrivateDto);
+        return { task };
     }
 
     @Post('add-priority-task')
-    async addPriorityToTask(@Body() addPriorityDto: AddPriorityDto): Promise<Task> {
-        return this.taskServices.addPriorityToTask(addPriorityDto);
+    async addPriorityToTask(@Body() addPriorityDto: AddPriorityDto): Promise<any> {
+        const task = await this.taskServices.addPriorityToTask(addPriorityDto);
+        return { task };
     }
 }
