@@ -73,8 +73,11 @@ export class TaskService {
             const task = await this.getUserTask(taskId)
             return { task };
         }
+
         const tasks = await this.databaseService.task.findMany({
-            where: { userId: Number(getTaskDto.userId) }
+            where: { userId: Number(getTaskDto.userId) },
+            skip: Number((getTaskDto.page - 1) * getTaskDto.limit),
+            take: Number(getTaskDto.limit),
         })
         return { tasks };
     }

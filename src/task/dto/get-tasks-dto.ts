@@ -4,4 +4,10 @@ export class GetTasksDto {
     userId: number;
     @IsOptional()
     taskId: number;
+    @IsOptional()
+    page: number;
+    @IsOptional()
+    limit: number;
+    @IsOptional()
+    search: string;
 }
