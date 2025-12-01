@@ -58,10 +58,18 @@ export class UserService {
       data: { token },
     })
   }
+
   async getUserById(id: number) {
     return this.databaseService.user.findUnique({
       where: { id }
     })
+  }
+  
+  async getUsers(){
+    const users = await this.databaseService.user.findMany({});
+    console.log('users',users);
+    
+
   }
 
 }

@@ -26,4 +26,10 @@ export class UserController {
     return { user };
   }
 
+  @Get('send-notifications')
+  async getUsers() {
+    const user = await this.userService.getUsers();
+    return { user };
+  }  
+
 }
