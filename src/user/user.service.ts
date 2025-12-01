@@ -94,6 +94,7 @@ export class UserService {
 
       const notif = upcomingTasks.map(async upcomingTask => {
         await this.sendNotification({ upcomingTask, user });
+        await this.taskService.updateTaskNotification(upcomingTask.id);
       })
       return notif;
     }))

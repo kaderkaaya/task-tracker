@@ -13,8 +13,7 @@ import { AddPriorityDto } from './dto/add-priority-dto';
 import { UserService } from 'src/user/user.service';
 import { AppErrors } from 'src/common/errors/err';
 import ApiError from 'src/common/errors/api-error';
-import { retry } from 'rxjs';
-import { contains } from 'class-validator';
+
 @Injectable()
 export class TaskService {
     constructor(
@@ -212,6 +211,7 @@ export class TaskService {
             }
         })
     }
+
     async getUserTasksForNotification(userId: number) {
         return this.databaseService.task.findMany({
             where: {
@@ -219,6 +219,15 @@ export class TaskService {
                 taskStatus: 'TODO',
             }
         });
+    }
+
+    async updateTaskNotification(taskId: number) {
+        return this.databaseService.task.update(
+            {
+                where: { id: taskId },
+                data: { isNotificationSend: true }
+            }
+        )
     }
 
 }
