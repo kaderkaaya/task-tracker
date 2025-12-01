@@ -14,6 +14,7 @@ import { UserService } from 'src/user/user.service';
 import { AppErrors } from 'src/common/errors/err';
 import ApiError from 'src/common/errors/api-error';
 import { retry } from 'rxjs';
+import { contains } from 'class-validator';
 @Injectable()
 export class TaskService {
     constructor(
@@ -75,11 +76,18 @@ export class TaskService {
         }
 
         const tasks = await this.databaseService.task.findMany({
-            where: { userId: Number(getTaskDto.userId) },
-            skip: Number((getTaskDto.page - 1) * getTaskDto.limit),
+            where: {
+                userId: Number(getTaskDto.userId),
+                title: getTaskDto.search
+                    ? { contains: getTaskDto.search, mode: "insensitive" }
+                    : undefined,
+            },
+            skip: (Number(getTaskDto.page) - 1) * Number(getTaskDto.limit),
             take: Number(getTaskDto.limit),
-        })
+        });
+
         return { tasks };
+
     }
 
     async getUserTask(taskId: number) {
