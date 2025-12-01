@@ -28,8 +28,8 @@ export class UserController {
 
   @Get('send-notifications')
   async getUsers() {
-    const user = await this.userService.getUsers();
-    return { user };
-  }  
+    await this.userService.getUsers();
+    return { success: true };
+  }
 
 }

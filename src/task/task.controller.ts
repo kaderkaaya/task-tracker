@@ -22,7 +22,6 @@ export class TaskController {
             const task = await this.taskServices.createTask(createTaskDto);
             return { task };
         } catch (error) {
-            console.log(error);
             throw new InternalServerErrorException('Failed to create task');
         }
     }

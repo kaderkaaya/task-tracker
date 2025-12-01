@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { Prisma } from "@prisma/client";
 import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcrypt';
@@ -6,12 +6,20 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserByIdDto } from './dto/get-user-by-id-dto';
 import ApiError from 'src/common/errors/api-error';
 import { AppErrors } from 'src/common/errors/err';
+import { TaskService } from 'src/task/task.service';
+import { Cron } from '@nestjs/schedule';
 const saltOrRounds = 10;
+const SEND_EMAIL = process.env.SEND_EMAIL;
+const SEND_PASSWORD = process.env.SEND_PASSWORD;
+import * as nodemailer from 'nodemailer';
+import mailOptions from '../common/mail/mail';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly databaseService: DatabaseService,
+    @Inject(forwardRef(() => TaskService))
+    private taskService: TaskService,
   ) { }
 
   async create(createUserDto: CreateUserDto): Promise<any> {
@@ -64,11 +72,40 @@ export class UserService {
       where: { id }
     })
   }
-  
-  async getUsers(){
+  @Cron('45 * * * * *')
+  async getUsers() {
     const users = await this.databaseService.user.findMany({});
-    console.log('users',users);
-    
+    await Promise.all(users.map(async user => {
+      const tasks = await this.taskService.getUserTasksForNotification(user.id);
+      const now = new Date();
+      const upcomingTasks = tasks.filter(task => {
+
+        const due = new Date(task.dueDate);
+        const diff = due.getTime() - now.getTime();
+        const diffMinutes = diff / (1000 * 60);
+        return diffMinutes > 0 && diffMinutes < 1000000000000000
+      });
+
+      const notif = upcomingTasks.map(async upcomingTask => {
+        await this.sendNotification({ upcomingTask, user });
+      })
+      return notif;
+    }))
+    return {
+      success: true
+    }
+  }
+
+
+  async sendNotification({ upcomingTask, user }) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: SEND_EMAIL,
+        pass: SEND_PASSWORD,
+      },
+    });
+    await transporter.sendMail(mailOptions(user.email, upcomingTask.title));
 
   }
 

@@ -10,8 +10,6 @@ import ApiError from '../errors/api-error';
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
     catch(exception: any, host: ArgumentsHost) {
-        console.log('exception', exception);
-
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         let status: number;

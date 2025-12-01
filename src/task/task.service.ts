@@ -1,4 +1,4 @@
-import { Injectable, ParseDatePipe } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, ParseDatePipe } from '@nestjs/common';
 import { Prisma, TaskStatus } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateTaskDto } from './dto/create-task-dto';
@@ -13,10 +13,12 @@ import { AddPriorityDto } from './dto/add-priority-dto';
 import { UserService } from 'src/user/user.service';
 import { AppErrors } from 'src/common/errors/err';
 import ApiError from 'src/common/errors/api-error';
+import { retry } from 'rxjs';
 @Injectable()
 export class TaskService {
     constructor(
         private readonly databaseService: DatabaseService,
+        @Inject(forwardRef(() => UserService))
         private usersService: UserService,
 
     ) { }
@@ -198,6 +200,14 @@ export class TaskService {
                 priority: addPriorityDto.priority,
             }
         })
+    }
+    async getUserTasksForNotification(userId: number) {
+        return this.databaseService.task.findMany({
+            where: {
+                userId,
+                taskStatus: 'TODO',
+            }
+        });
     }
 
 }
