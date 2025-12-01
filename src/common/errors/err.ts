@@ -4,7 +4,7 @@ export const AppErrors = {
         message: 'This user already exists'
     },
     PASSWORD_ERROR: {
-        statusCode: 102,
+        statusCode: 709,
         message: `The password must meet the following requirements:
                          - At least 1 lowercase letter
                          - At least 1 uppercase letter

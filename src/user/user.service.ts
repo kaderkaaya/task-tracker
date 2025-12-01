@@ -23,9 +23,15 @@ export class UserService {
   ) { }
 
   async create(createUserDto: CreateUserDto): Promise<any> {
+    let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,}$/;
     const user = await this.getUser(createUserDto.email);
     if (user) {
       throw new ApiError(AppErrors.EXISTING_USER.message, AppErrors.EXISTING_USER.statusCode)
+    }
+    const validatePassword = passwordRegex.test(createUserDto.password);
+
+    if (!validatePassword) {
+      throw new ApiError(AppErrors.PASSWORD_ERROR.message, AppErrors.PASSWORD_ERROR.statusCode);
     }
     const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
     return this.databaseService.user.create({
